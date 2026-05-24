@@ -1,0 +1,1 @@
+Given we know the maximum domain size, can we test to verify that the maximim possible scrambler value works correctly? Test in both the FeistelScrambler and the Token tests.
