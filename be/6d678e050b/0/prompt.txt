@@ -1,0 +1,5 @@
+Help me review this codebase. Is "FeistelScrambler" the best name for this operation, based on how it works? I only ask because according to https://en.wikipedia.org/wiki/Feistel_cipher I don't see that terminology mentioned.
+
+---
+
+Let's go with FeistelCipher, with encrypt/decrypt. Review the codebase, including tests and readmes, to make terminology consistent/
