@@ -15,12 +15,12 @@ class TokenTest {
         }
     }
 
-    class TaskToken : Token {
+    class InvoiceToken : Token {
         constructor(value: String) : super(PREFIX, SEED, value)
         constructor(id: Int) : super(PREFIX, SEED, id)
 
         companion object {
-            const val PREFIX = "TK"
+            const val PREFIX = "INV"
             const val SEED = 0x0000000L
         }
     }
@@ -52,9 +52,9 @@ class TokenTest {
     }
 
     @Test
-    fun `TaskToken roundtrips`() {
+    fun `InvoiceToken roundtrips`() {
         for (id in 0..20) {
-            val token = TaskToken(id)
+            val token = InvoiceToken(id)
             assertEquals(id, token.toId())
         }
     }
@@ -67,9 +67,9 @@ class TokenTest {
     }
 
     @Test
-    fun `TaskToken value matches expected format`() {
-        val token = TaskToken(42)
-        assertTrue(token.value.matches(Regex("TK_[0-9A-HJKMNP-TV-Z]{6}")),
+    fun `InvoiceToken value matches expected format`() {
+        val token = InvoiceToken(42)
+        assertTrue(token.value.matches(Regex("INV_[0-9A-HJKMNP-TV-Z]{6}")),
             "Token '${token.value}' does not match expected format")
     }
 
