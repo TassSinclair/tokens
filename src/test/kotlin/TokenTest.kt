@@ -6,22 +6,22 @@ import kotlin.test.assertFailsWith
 class TokenTest {
 
     class TenantToken : Token {
-        constructor(value: String) : super(PREFIX, B32, value)
-        constructor(id: Int) : super(PREFIX, B32, id)
+        constructor(value: String) : super(PREFIX, SEED, value)
+        constructor(id: Int) : super(PREFIX, SEED, id)
 
         companion object {
             const val PREFIX = 'T'
-            val B32 = Base32Crockford(0x948d928L)
+            const val SEED = 0x948d928L
         }
     }
 
     class UserToken : Token {
-        constructor(value: String) : super(PREFIX, B32, value)
-        constructor(id: Int) : super(PREFIX, B32, id)
+        constructor(value: String) : super(PREFIX, SEED, value)
+        constructor(id: Int) : super(PREFIX, SEED, id)
 
         companion object {
             const val PREFIX = 'U'
-            val B32 = Base32Crockford(0x2783dabL)
+            const val SEED = 0x2783dabL
         }
     }
 
@@ -66,6 +66,17 @@ class TokenTest {
         val user = UserToken(1)
         val tenant = TenantToken(1)
         assertTrue(user.value != tenant.value)
+    }
+
+    @Test
+    fun `adjacent IDs produce tokens that differ in most characters`() {
+        val pairs = listOf(0 to 1, 99 to 100, 999 to 1000, 12345 to 12346)
+        for ((a, b) in pairs) {
+            val ea = UserToken(a).value.drop(2)
+            val eb = UserToken(b).value.drop(2)
+            val diffs = ea.zip(eb).count { (c1, c2) -> c1 != c2 }
+            assertTrue(diffs >= 3, "IDs $a and $b only differ in $diffs/6 chars: $ea vs $eb")
+        }
     }
 
     @Test

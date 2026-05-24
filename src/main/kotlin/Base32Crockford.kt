@@ -1,95 +1,65 @@
-import kotlin.random.Random
-
-/** Encodes integers as short, human-friendly strings using a [seed]-specific shuffled alphabet to prevent ID guessing and enumeration. */
-class Base32Crockford(seed: Long) {
-
-    private val characterTable = charArrayOf(
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M',
-        'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'
-        ).also { arr ->
-            val rng = Random(seed)
-            for (i in arr.size - 1 downTo 1) {
-                val j = rng.nextInt(i + 1)
-                val tmp = arr[i]
-                arr[i] = arr[j]
-                arr[j] = tmp
-            }
-        }
-
-    private val cipher = FeistelCipher(
-        key = seed,
-        domainSize = 32 * 32 * 32 * 32 * 32 * 32
-    )
-
-    private val reverseTable = buildMap {
-        characterTable.forEachIndexed { index, ch ->
-            put(ch, index)
-            put(ch.lowercaseChar(), index)
-        }
-        val zeroIndex = characterTable.indexOf('0')
-        val oneIndex = characterTable.indexOf('1')
-        val vIndex = characterTable.indexOf('V')
-        put('O', zeroIndex); put('o', zeroIndex)
-        put('I', oneIndex); put('i', oneIndex)
-        put('L', oneIndex); put('l', oneIndex)
-        put('U', vIndex); put('u', vIndex)
-    }
+/** Encodes and decodes integers as human-friendly strings using [Crockford's Base32](https://www.crockford.com/base32.html). */
+object Base32Crockford {
 
     /** Encodes [input] as a 6-character Base32 string. */
     fun encode(input: Int): String {
-        require(input >= 0) { "ID must be non-negative" }
+        require(input >= 0) { "Input must be non-negative" }
 
-        val encrypted = cipher.encrypt(input)
-
-        var number = encrypted.toLong()
+        var number = input.toLong()
         val response = StringBuilder()
 
         do {
             val remainder = (number % 32).toInt()
-            response.insert(0, characterTable[remainder])
+            response.insert(0, CHARACTER_TABLE[remainder])
             number /= 32
         } while (number > 0)
 
         while (response.length < 6) {
-            response.insert(0, characterTable[0])
+            response.insert(0, CHARACTER_TABLE[0])
         }
 
         return response.toString()
     }
 
-    /** Decodes [string] back to the original integer. Case-insensitive. */
+    /** Decodes [string] back to an integer. Case-insensitive. */
     fun decode(string: String): Int {
-        require(string.isNotEmpty()) { "Token string must not be empty" }
+        require(string.isNotEmpty()) { "Input must not be empty" }
 
         var result: Long = 0
 
         for (i in string.indices) {
             val ch = string[i]
-            val value = reverseTable[ch]
+            val value = REVERSE_TABLE[ch]
                 ?: throw IllegalArgumentException("Invalid character '$ch'")
             result = result * 32 + value
         }
 
-        return cipher.decrypt(result.toInt())
+        return result.toInt()
     }
 
     /** Converts [string] to its canonical representation, replacing confusable characters and normalising case. */
     fun canonicalise(string: String): String {
         return string.map { ch ->
-            val index = reverseTable[ch]
+            val index = REVERSE_TABLE[ch]
                 ?: throw IllegalArgumentException("Invalid character '$ch'")
-            characterTable[index]
+            CHARACTER_TABLE[index]
         }.joinToString("")
     }
 
-    /** Returns true if [string] can be decoded successfully. */
-    fun check(string: String): Boolean {
-        return try {
-            decode(string)
-            true
-        } catch (_: Exception) {
-            false
+    private val CHARACTER_TABLE = charArrayOf(
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M',
+        'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'
+    )
+
+    private val REVERSE_TABLE = buildMap {
+        CHARACTER_TABLE.forEachIndexed { index, ch ->
+            put(ch, index)
+            put(ch.lowercaseChar(), index)
         }
+        put('O', 0); put('o', 0)
+        put('I', 1); put('i', 1)
+        put('L', 1); put('l', 1)
+        put('U', 27); put('u', 27)
     }
 }

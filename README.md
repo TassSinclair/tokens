@@ -3,16 +3,16 @@
 Convert sequential database IDs into compact, non-enumerable, type-prefixed tokens.
 
 ```
-User ID 1  → U_NM0X1X
-User ID 2  → U_MS9B7M
-User ID 3  → U_AEWF2W
+User ID 1  → U_71VHDH
+User ID 2  → U_1MXBJ1
+User ID 3  → U_ZR5KA5
 ```
 
 Each token type has its own prefix and seed, so the same integer ID produces different tokens for different entity types:
 
 ```kotlin
-UserToken(1).value    // "U_NM0X1X"
-TenantToken(1).value  // "T_DCPRTD"
+UserToken(1).value    // "U_71VHDH"
+TenantToken(1).value  // "T_Q4BDJQ"
 ```
 
 Tokens are reversible, you can always recover the original ID:
@@ -25,7 +25,7 @@ UserToken(42).toId()  // 42
 
 1. A **Feistel cipher** permutes integers reversibly within a fixed domain, so that sequential inputs produce unique, unrelated outputs.
 
-2. A **Base32 encoder** encodes each integer as a short, human-friendly 6-character string using a seed-specific shuffled alphabet ([Crockford's Base32](https://www.crockford.com/base32.html), minus ambiguous characters like `I`, `L`, `O`) to prevent ID guessing and enumeration.
+2. A **Base32 encoder** encodes each integer as a short, human-friendly 6-character string using [Crockford's Base32](https://www.crockford.com/base32.html) (minus ambiguous characters like `I`, `L`, `O`).
 
 3. A **typed token wrapper** pairs a type prefix (e.g. `U_`, `T_`) with an encoded ID, so tokens are self-describing and can't be mixed across entity types.
 
@@ -49,12 +49,12 @@ UserToken("U_abcol2").toId() == UserToken("U_ABC012").toId()  // true
 
 ```kotlin
 class ProjectToken : Token {
-    constructor(value: String) : super(PREFIX, B32, value)
-    constructor(id: Int) : super(PREFIX, B32, id)
+    constructor(value: String) : super(PREFIX, SEED, value)
+    constructor(id: Int) : super(PREFIX, SEED, id)
 
     companion object {
         const val PREFIX = 'P'
-        val B32 = Base32Crockford(0xYOUR_SEED_HERE)
+        const val SEED = 0xYOUR_SEED_HERE
     }
 }
 ```
