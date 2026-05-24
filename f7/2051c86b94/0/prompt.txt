@@ -1,0 +1,49 @@
+Create a basic README for this repo.
+
+---
+
+Create a basic README for this repo. Note that the intention is to use this as a reference for a blog post.
+
+---
+
+Add class-level comments that describe what problems each class solves. Focus on the why, not the how.
+
+---
+
+There are references to "ID guessing" expand this to cover enumeration.
+
+---
+
+Add javadoc comments to the public methods in the production code, also.
+
+---
+
+Good. Review all of them and align the tone and messaging for consistency, Ensure all inputs are mentioned as part of the docs.
+
+---
+
+Good, now update the README to use the same terminology, so we're consistent with terminology throughout the codebase.
+
+---
+
+Make some commits based on all of the work we've done.
+
+---
+
+git add .entire
+
+---
+
+Yes please.
+
+---
+
+Cue up another commit.
+
+---
+
+A bit of a nit, but can you revise the Git history and update commit messages to use Australian english (eg. initialize -> initialize)? Then force-push.
+
+---
+
+Yes please.

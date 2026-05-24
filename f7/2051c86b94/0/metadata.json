@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "f72051c86b94",
+  "session_id": "91815d2d-35b1-458b-b3e7-78ac219da198",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-24T04:12:14.511735Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/main/kotlin/Base32Crockford.kt",
+    "src/test/kotlin/Base32CrockfordTest.kt"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "80e3adb17fc3",
+  "token_usage": {
+    "input_tokens": 134,
+    "cache_creation_tokens": 119973,
+    "cache_read_tokens": 5328471,
+    "output_tokens": 36663,
+    "api_call_count": 86
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-24T04:12:14.497886Z",
+    "agent_lines": 46,
+    "agent_removed": 0,
+    "human_added": 41,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 87,
+    "total_lines_changed": 91,
+    "agent_percentage": 50.54945054945055,
+    "metric_version": 2
+  }
+}
