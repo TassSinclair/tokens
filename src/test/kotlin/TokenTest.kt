@@ -5,6 +5,26 @@ import kotlin.test.assertFailsWith
 
 class TokenTest {
 
+    class TenantToken : Token {
+        constructor(value: String) : super(PREFIX, B32, value)
+        constructor(id: Int) : super(PREFIX, B32, id)
+
+        companion object {
+            const val PREFIX = 'T'
+            val B32 = Base32Crockford(0x948d928L)
+        }
+    }
+
+    class UserToken : Token {
+        constructor(value: String) : super(PREFIX, B32, value)
+        constructor(id: Int) : super(PREFIX, B32, id)
+
+        companion object {
+            const val PREFIX = 'U'
+            val B32 = Base32Crockford(0x2783dabL)
+        }
+    }
+
     @Test
     fun `UserToken roundtrips`() {
         for (id in 0..20) {

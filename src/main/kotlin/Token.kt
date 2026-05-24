@@ -1,5 +1,5 @@
 /** Pairs a type [prefix] with an encoded ID, so tokens are self-describing and can't be mixed across entity types. */
-sealed class Token(
+open class Token(
     prefix: Char,
     private val base32Crockford: Base32Crockford,
     val value: String,
@@ -28,24 +28,4 @@ sealed class Token(
     override fun hashCode(): Int = value.hashCode()
 
     override fun compareTo(other: Token) = this.value.compareTo(other.value)
-}
-
-class TenantToken : Token {
-    constructor(value: String) : super(PREFIX, B32, value)
-    constructor(id: Int) : super(PREFIX, B32, id)
-
-    companion object {
-        const val PREFIX = 'T'
-        val B32 = Base32Crockford(0x948d928L)
-    }
-}
-
-class UserToken : Token {
-    constructor(value: String) : super(PREFIX, B32, value)
-    constructor(id: Int) : super(PREFIX, B32, id)
-
-    companion object {
-        const val PREFIX = 'U'
-        val B32 = Base32Crockford(0x2783dabL)
-    }
 }
