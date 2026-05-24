@@ -26,6 +26,14 @@ class FeistelScramblerTest {
     }
 
     @Test
+    fun `maximum domain value roundtrips`() {
+        val maxId = domainSize - 1
+        val scrambled = scrambler.scramble(maxId)
+        assertTrue(scrambled in 0 until domainSize, "Scrambled value $scrambled outside domain")
+        assertEquals(maxId, scrambler.unscramble(scrambled))
+    }
+
+    @Test
     fun `scramble rejects negative input`() {
         assertFailsWith<IllegalArgumentException> {
             scrambler.scramble(-1)

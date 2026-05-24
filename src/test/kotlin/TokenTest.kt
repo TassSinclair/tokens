@@ -90,6 +90,15 @@ class TokenTest {
     }
 
     @Test
+    fun `maximum ID roundtrips`() {
+        val maxId = 32 * 32 * 32 * 32 * 32 * 32 - 1
+        val token = UserToken(maxId)
+        assertTrue(token.value.matches(Regex("U_[0-9A-HJKMNP-TV-Z]{6}")),
+            "Token '${token.value}' does not match expected format")
+        assertEquals(maxId, token.toId())
+    }
+
+    @Test
     fun `token rejects wrong prefix`() {
         val token = UserToken(0)
         val badValue = "X" + token.value.drop(1)
