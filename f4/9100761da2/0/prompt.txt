@@ -1,0 +1,41 @@
+Help me understand the `maximum domain value roundtrips` FeistelCipher test. Apparently for input 1073741823, we are able to cipher to 421086739 and round-trip back to the same number. However there are more digits in the input number than the encrypted number, so I can't see how there would be a true 1:1 mapping if the encrypted domain space is smaller. Is there something I'm missing here?
+
+---
+
+Oh of course. Thanks for clarifying. Duh.
+
+---
+
+Let's talk about the complexity. I know the Base32 encoder has some shuffling functionality, and the FeiselCipher also encodes IDs to somewhere else in the key space. Given the FeiselCipher is so effective, what benefit is there to shuffle the Base32 keyspace?
+
+---
+
+Let's simplify it. The shuffle isn't providing enough value.
+
+---
+
+I reverted the changes I had been testing. Proceed with the simplification.
+
+---
+
+It strikes me that the Base32Crockford should not have information about the FeistelCipher, as they are two separate elements in the same process. Can we uplift the FeistelCipher to the Token? We may need to change the Base32Crockford and Token tests to ensure the behaviour is still tested in the appropriate place.
+
+---
+
+I'd prefer the Token base class to init the FeistelCipher based on a passed-in seed.
+
+---
+
+Undo that, let me try.
+
+---
+
+No, just undo the previous change, everything up until the Token constructor refactor was ideal.
+
+---
+
+I changed my mind, apologies. Repeat the change you made where the Token's primary constructor was made private, continued accepting the Feistel Cipher, and the additional factory constructors were added, so the subclasses could focus on passing in seeds.
+
+---
+
+One thing that confused me before, you had added another private constructor that doesn't appear to be used. What's the purpose of it?

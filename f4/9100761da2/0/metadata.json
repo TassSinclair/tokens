@@ -1,0 +1,127 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "f49100761da2",
+  "session_id": "edd39954-7571-4c86-9ebc-20138bd5f473",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-24T13:22:56.649347Z",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "README.md",
+    "src/main/kotlin/Base32Crockford.kt",
+    "src/main/kotlin/Token.kt",
+    "src/test/kotlin/Base32CrockfordTest.kt",
+    "src/test/kotlin/TokenTest.kt"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "3d9c4e5dccca",
+  "checkpoint_transcript_start": 112,
+  "transcript_lines_at_start": 112,
+  "token_usage": {
+    "input_tokens": 81,
+    "cache_creation_tokens": 75476,
+    "cache_read_tokens": 3508001,
+    "output_tokens": 22078,
+    "api_call_count": 57
+  },
+  "session_metrics": {
+    "turn_count": 13
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-24T13:22:56.635003Z",
+    "agent_lines": 55,
+    "agent_removed": 94,
+    "human_added": 7,
+    "human_modified": 8,
+    "human_removed": 0,
+    "total_committed": 70,
+    "total_lines_changed": 164,
+    "agent_percentage": 90.85365853658537,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 6,
+      "user_lines_removed": 4,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "src/test/kotlin/Base32CrockfordTest.kt": 2,
+        "src/test/kotlin/FeistelCipherTest.kt": 4
+      },
+      "user_removed_per_file": {
+        "src/test/kotlin/Base32CrockfordTest.kt": 1,
+        "src/test/kotlin/FeistelCipherTest.kt": 3
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 12,
+      "user_lines_removed": 4,
+      "agent_lines_added": 32,
+      "agent_lines_removed": 45,
+      "user_added_per_file": {
+        "src/test/kotlin/TokenTest.kt": 12
+      },
+      "user_removed_per_file": {
+        "src/test/kotlin/TokenTest.kt": 4
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 69,
+      "agent_lines_removed": 101
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 2,
+      "user_lines_removed": 2,
+      "agent_lines_added": 69,
+      "agent_lines_removed": 101,
+      "user_added_per_file": {
+        "src/test/kotlin/TokenTest.kt": 2
+      },
+      "user_removed_per_file": {
+        "src/test/kotlin/TokenTest.kt": 2
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 80,
+      "agent_lines_removed": 102
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 1,
+      "user_lines_removed": 1,
+      "agent_lines_added": 80,
+      "agent_lines_removed": 102,
+      "user_added_per_file": {
+        "src/main/kotlin/Token.kt": 1
+      },
+      "user_removed_per_file": {
+        "src/main/kotlin/Token.kt": 1
+      }
+    }
+  ]
+}
