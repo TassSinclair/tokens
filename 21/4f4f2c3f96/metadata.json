@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "214f4f2c3f96",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "src/main/kotlin/Token.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/21/4f4f2c3f96/0/metadata.json",
+      "transcript": "/21/4f4f2c3f96/0/full.jsonl",
+      "content_hash": "/21/4f4f2c3f96/0/content_hash.txt",
+      "prompt": "/21/4f4f2c3f96/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 5,
+    "cache_creation_tokens": 881,
+    "cache_read_tokens": 96668,
+    "output_tokens": 490,
+    "api_call_count": 3
+  }
+}
