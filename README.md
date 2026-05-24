@@ -23,7 +23,7 @@ UserToken(42).toId()  // 42
 
 ## How it works
 
-1. A **Feistel scrambler** permutes integers reversibly within a fixed domain, so that sequential inputs produce unique, unrelated outputs.
+1. A **Feistel cipher** permutes integers reversibly within a fixed domain, so that sequential inputs produce unique, unrelated outputs.
 
 2. A **Base32 encoder** encodes each integer as a short, human-friendly 6-character string using a seed-specific shuffled alphabet ([Crockford's Base32](https://www.crockford.com/base32.html), minus ambiguous characters like `I`, `L`, `O`) to prevent ID guessing and enumeration.
 
@@ -69,4 +69,4 @@ Use a different seed for each token type to ensure their output spaces don't col
 
 ## Sources
 - [Base32 (crockford.com)](https://www.crockford.com/base32.html)
-- [Feistel-Cipher (asecuritysite.com)](https://asecuritysite.com/fpe/fei)
+- [Feistel cipher (asecuritysite.com)](https://asecuritysite.com/fpe/fei)

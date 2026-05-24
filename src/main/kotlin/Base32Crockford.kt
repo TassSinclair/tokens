@@ -17,7 +17,7 @@ class Base32Crockford(seed: Long) {
             }
         }
 
-    private val scrambler = FeistelScrambler(
+    private val cipher = FeistelCipher(
         key = seed,
         domainSize = 32 * 32 * 32 * 32 * 32 * 32
     )
@@ -40,9 +40,9 @@ class Base32Crockford(seed: Long) {
     fun encode(input: Int): String {
         require(input >= 0) { "ID must be non-negative" }
 
-        val scrambled = scrambler.scramble(input)
+        val encrypted = cipher.encrypt(input)
 
-        var number = scrambled.toLong()
+        var number = encrypted.toLong()
         val response = StringBuilder()
 
         do {
@@ -71,7 +71,7 @@ class Base32Crockford(seed: Long) {
             result = result * 32 + value
         }
 
-        return scrambler.unscramble(result.toInt())
+        return cipher.decrypt(result.toInt())
     }
 
     /** Converts [string] to its canonical representation, replacing confusable characters and normalising case. */

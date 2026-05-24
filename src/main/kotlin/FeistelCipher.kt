@@ -2,7 +2,7 @@ import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /** Permutes integers reversibly within `[0, [domainSize])` using [key], so that sequential inputs produce unrelated outputs. */
-class FeistelScrambler(
+class FeistelCipher(
     private val key: Long,
     private val domainSize: Int,
 ) {
@@ -28,7 +28,7 @@ class FeistelScrambler(
     }
 
     /** Maps [input] to a unique, unrelated integer within the same domain. */
-    fun scramble(input: Int): Int {
+    fun encrypt(input: Int): Int {
         require(input in 0 until domainSize) { "Input $input outside domain [0, $domainSize)" }
         var value = input
         do {
@@ -45,8 +45,8 @@ class FeistelScrambler(
         return value
     }
 
-    /** Recovers the original integer from a scrambled [input]. */
-    fun unscramble(input: Int): Int {
+    /** Recovers the original integer from an encrypted [input]. */
+    fun decrypt(input: Int): Int {
         require(input in 0 until domainSize) { "Input $input outside domain [0, $domainSize)" }
         var value = input
         do {
