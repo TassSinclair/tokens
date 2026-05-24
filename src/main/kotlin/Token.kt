@@ -1,5 +1,5 @@
 /** Pairs a type [prefix] with an encoded ID, so tokens are self-describing and can't be mixed across entity types. */
-open class Token private constructor(
+abstract class Token private constructor(
     prefix: String,
     private val cipher: FeistelCipher,
     value: String,
