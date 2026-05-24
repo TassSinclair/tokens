@@ -39,3 +39,7 @@ I changed my mind, apologies. Repeat the change you made where the Token's prima
 ---
 
 One thing that confused me before, you had added another private constructor that doesn't appear to be used. What's the purpose of it?
+
+---
+
+Correct, apologies. The IDE marked it as unused but I understand the workaround you've performed. Let's cue up another commit and push.
