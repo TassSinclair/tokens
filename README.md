@@ -3,16 +3,16 @@
 Convert sequential database IDs into compact, non-enumerable, type-prefixed tokens.
 
 ```
-ID 0  → U_SH5JWN
-ID 1  → U_GKDM6Q
-ID 2  → U_0528VT
+User ID 1  → U_NM0X1X
+User ID 2  → U_MS9B7M
+User ID 3  → U_AEWF2W
 ```
 
 Each token type has its own prefix and seed, so the same integer ID produces different tokens for different entity types:
 
 ```kotlin
-UserToken(1).value    // "U_GKDM6Q"
-TenantToken(1).value  // "T_RJ4NCA"
+UserToken(1).value    // "U_NM0X1X"
+TenantToken(1).value  // "T_DCPRTD"
 ```
 
 Tokens are reversible, you can always recover the original ID:
@@ -41,8 +41,8 @@ Tokens are permissive of common transcription errors. When constructed from a st
 | `a`–`z`      | `A`–`Z`   |
 
 ```kotlin
-UserToken("U_l23abu").value  // "U_123ABV"
-UserToken("U_l23abu").toId() == UserToken("U_123ABV").toId()  // true
+UserToken("U_abcol2").value  // "U_ABC012"
+UserToken("U_abcol2").toId() == UserToken("U_ABC012").toId()  // true
 ```
 
 ## Defining new token types
