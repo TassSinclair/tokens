@@ -1,0 +1,1 @@
+I've just updated Token to allow multi-char prefixes. This changes some assumptions we've made and may invalidate a test. Please review, update as necessary, commit and push.

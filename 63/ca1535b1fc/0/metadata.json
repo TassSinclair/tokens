@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "63ca1535b1fc",
+  "session_id": "095c24f8-9f82-4591-bb28-7b8ac1529292",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-24T14:21:07.608115Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "src/main/kotlin/Token.kt",
+    "src/test/kotlin/TokenTest.kt"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "381d87d40538",
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 19600,
+    "cache_read_tokens": 281587,
+    "output_tokens": 4818,
+    "api_call_count": 12
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-24T14:21:07.603917Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 18,
+    "human_modified": 19,
+    "human_removed": 0,
+    "total_committed": 18,
+    "total_lines_changed": 37,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 25,
+      "user_lines_removed": 8,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "src/main/kotlin/Token.kt": 6,
+        "src/test/kotlin/TokenTest.kt": 19
+      },
+      "user_removed_per_file": {
+        "src/main/kotlin/Token.kt": 6,
+        "src/test/kotlin/TokenTest.kt": 2
+      }
+    }
+  ]
+}
