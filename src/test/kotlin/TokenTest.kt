@@ -10,8 +10,18 @@ class TokenTest {
         constructor(id: Int) : super(PREFIX, SEED, id)
 
         companion object {
-            const val PREFIX = 'T'
+            const val PREFIX = "T"
             const val SEED = 0x948d928L
+        }
+    }
+
+    class TaskToken : Token {
+        constructor(value: String) : super(PREFIX, SEED, value)
+        constructor(id: Int) : super(PREFIX, SEED, id)
+
+        companion object {
+            const val PREFIX = "TK"
+            const val SEED = 0x0000000L
         }
     }
 
@@ -20,7 +30,7 @@ class TokenTest {
         constructor(id: Int) : super(PREFIX, SEED, id)
 
         companion object {
-            const val PREFIX = 'U'
+            const val PREFIX = "U"
             const val SEED = 0x2783dabL
         }
     }
@@ -42,9 +52,24 @@ class TokenTest {
     }
 
     @Test
+    fun `TaskToken roundtrips`() {
+        for (id in 0..20) {
+            val token = TaskToken(id)
+            assertEquals(id, token.toId())
+        }
+    }
+
+    @Test
     fun `UserToken value matches expected format`() {
         val token = UserToken(42)
         assertTrue(token.value.matches(Regex("U_[0-9A-HJKMNP-TV-Z]{6}")),
+            "Token '${token.value}' does not match expected format")
+    }
+
+    @Test
+    fun `TaskToken value matches expected format`() {
+        val token = TaskToken(42)
+        assertTrue(token.value.matches(Regex("TK_[0-9A-HJKMNP-TV-Z]{6}")),
             "Token '${token.value}' does not match expected format")
     }
 
@@ -72,8 +97,8 @@ class TokenTest {
     fun `adjacent IDs produce tokens that differ in most characters`() {
         val pairs = listOf(0 to 1, 99 to 100, 999 to 1000, 12345 to 12346)
         for ((a, b) in pairs) {
-            val ea = UserToken(a).value.drop(2)
-            val eb = UserToken(b).value.drop(2)
+            val ea = UserToken(a).value.substringAfter('_')
+            val eb = UserToken(b).value.substringAfter('_')
             val diffs = ea.zip(eb).count { (c1, c2) -> c1 != c2 }
             assertTrue(diffs >= 3, "IDs $a and $b only differ in $diffs/6 chars: $ea vs $eb")
         }
