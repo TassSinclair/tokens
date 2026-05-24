@@ -2,15 +2,15 @@
 open class Token(
     prefix: Char,
     private val base32Crockford: Base32Crockford,
-    val value: String,
+    value: String,
 ) : Comparable<Token> {
+
+    val value: String
 
     init {
         require(value.startsWith("${prefix}_")) { "Token must start with '${prefix}_'" }
         require(value.length == 8) { "Token must be 8 characters long" }
-        require(base32Crockford.check(value.drop(2))) {
-            "'${value}' does not contain a valid base32 payload"
-        }
+        this.value = "${prefix}_${base32Crockford.canonicalise(value.drop(2))}"
     }
 
     constructor(prefix: Char, base32Crockford: Base32Crockford, id: Int) :

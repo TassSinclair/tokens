@@ -27,6 +27,13 @@ class Base32Crockford(seed: Long) {
             put(ch, index)
             put(ch.lowercaseChar(), index)
         }
+        val zeroIndex = characterTable.indexOf('0')
+        val oneIndex = characterTable.indexOf('1')
+        val vIndex = characterTable.indexOf('V')
+        put('O', zeroIndex); put('o', zeroIndex)
+        put('I', oneIndex); put('i', oneIndex)
+        put('L', oneIndex); put('l', oneIndex)
+        put('U', vIndex); put('u', vIndex)
     }
 
     /** Encodes [input] as a 6-character Base32 string. */
@@ -65,6 +72,15 @@ class Base32Crockford(seed: Long) {
         }
 
         return scrambler.unscramble(result.toInt())
+    }
+
+    /** Converts [string] to its canonical representation, replacing confusable characters and normalising case. */
+    fun canonicalise(string: String): String {
+        return string.map { ch ->
+            val index = reverseTable[ch]
+                ?: throw IllegalArgumentException("Invalid character '$ch'")
+            characterTable[index]
+        }.joinToString("")
     }
 
     /** Returns true if [string] can be decoded successfully. */

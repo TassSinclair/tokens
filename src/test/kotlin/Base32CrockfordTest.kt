@@ -43,6 +43,36 @@ class Base32CrockfordTest {
     }
 
     @Test
+    fun `decode handles confusable characters`() {
+        val id = 42
+        val encoded = b32.encode(id)
+        val confused = encoded
+            .replace('0', 'O')
+            .replace('1', 'l')
+            .replace('V', 'u')
+        assertEquals(id, b32.decode(confused))
+    }
+
+    @Test
+    fun `canonicalise normalises case and confusable characters`() {
+        val encoded = b32.encode(42)
+        assertEquals(encoded, b32.canonicalise(encoded.lowercase()))
+
+        val withConfusables = encoded
+            .replace('0', 'o')
+            .replace('1', 'I')
+            .replace('V', 'U')
+        assertEquals(encoded, b32.canonicalise(withConfusables))
+    }
+
+    @Test
+    fun `canonicalise rejects invalid characters`() {
+        assertFailsWith<IllegalArgumentException> {
+            b32.canonicalise("!!!!!!")
+        }
+    }
+
+    @Test
     fun `encode rejects negative input`() {
         assertFailsWith<IllegalArgumentException> {
             b32.encode(-1)

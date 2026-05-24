@@ -69,6 +69,27 @@ class TokenTest {
     }
 
     @Test
+    fun `token canonicalises confusable characters`() {
+        val canonical = UserToken(42)
+        val confused = canonical.value
+            .replace('0', 'O')
+            .replace('1', 'l')
+            .replace('V', 'u')
+        val fromConfused = UserToken(confused)
+        assertEquals(canonical, fromConfused)
+        assertEquals(canonical.value, fromConfused.value)
+        assertEquals(42, fromConfused.toId())
+    }
+
+    @Test
+    fun `token canonicalises lowercase input`() {
+        val canonical = UserToken(42)
+        val lower = "U_${canonical.value.drop(2).lowercase()}"
+        val fromLower = UserToken(lower)
+        assertEquals(canonical, fromLower)
+    }
+
+    @Test
     fun `token rejects wrong prefix`() {
         val token = UserToken(0)
         val badValue = "X" + token.value.drop(1)

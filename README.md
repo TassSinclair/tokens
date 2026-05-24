@@ -29,6 +29,22 @@ UserToken(42).toId()  // 42
 
 3. A **typed token wrapper** pairs a type prefix (e.g. `U_`, `T_`) with an encoded ID, so tokens are self-describing and can't be mixed across entity types.
 
+## Input canonicalisation
+
+Tokens are permissive of common transcription errors. When constructed from a string, confusable characters are automatically replaced with their canonical equivalents following [Crockford's Base32](https://www.crockford.com/base32.html) rules, and lowercase is normalised to uppercase:
+
+| Input        | Canonical |
+|--------------|-----------|
+| `O`, `o`     | `0`       |
+| `I`, `i`, `L`, `l` | `1` |
+| `U`, `u`     | `V`       |
+| `a`–`z`      | `A`–`Z`   |
+
+```kotlin
+UserToken("U_l23abu").value  // "U_123ABV"
+UserToken("U_l23abu").toId() == UserToken("U_123ABV").toId()  // true
+```
+
 ## Defining new token types
 
 ```kotlin
