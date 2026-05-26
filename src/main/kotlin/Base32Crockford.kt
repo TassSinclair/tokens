@@ -1,11 +1,11 @@
 /** Encodes and decodes integers as human-friendly strings using [Crockford's Base32](https://www.crockford.com/base32.html). */
 object Base32Crockford {
 
-    /** Encodes [input] as a 6-character Base32 string. */
-    fun encode(input: Int): String {
+    /** Encodes [input] as a [length]-character Base32 string. */
+    fun encode(input: Long, length: Int): String {
         require(input >= 0) { "Input must be non-negative" }
 
-        var number = input.toLong()
+        var number = input
         val response = StringBuilder()
 
         do {
@@ -14,7 +14,9 @@ object Base32Crockford {
             number /= 32
         } while (number > 0)
 
-        while (response.length < 6) {
+        require(response.length <= length) { "Value $input requires more than $length Base32 characters" }
+
+        while (response.length < length) {
             response.insert(0, CHARACTER_TABLE[0])
         }
 
@@ -22,28 +24,27 @@ object Base32Crockford {
     }
 
     /** Decodes [string] back to an integer. Case-insensitive. */
-    fun decode(string: String): Int {
+    fun decode(string: String): Long {
         require(string.isNotEmpty()) { "Input must not be empty" }
 
         var result: Long = 0
 
-        for (i in string.indices) {
-            val ch = string[i]
+        for (ch in string) {
             val value = REVERSE_TABLE[ch]
                 ?: throw IllegalArgumentException("Invalid character '$ch'")
             result = result * 32 + value
         }
 
-        return result.toInt()
+        return result
     }
 
     /** Converts [string] to its canonical representation, replacing confusable characters and normalising case. */
-    fun canonicalise(string: String): String {
-        return string.map { ch ->
+    fun canonicalise(string: String): String = buildString(string.length) {
+        for (ch in string) {
             val index = REVERSE_TABLE[ch]
                 ?: throw IllegalArgumentException("Invalid character '$ch'")
-            CHARACTER_TABLE[index]
-        }.joinToString("")
+            append(CHARACTER_TABLE[index])
+        }
     }
 
     private val CHARACTER_TABLE = charArrayOf(

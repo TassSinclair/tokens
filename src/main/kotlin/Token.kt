@@ -1,6 +1,7 @@
 /** Pairs a type [prefix] with an encoded ID, so tokens are self-describing and can't be mixed across entity types. */
 abstract class Token private constructor(
     prefix: String,
+    length: Int,
     private val cipher: FeistelCipher,
     value: String,
 ) : Comparable<Token> {
@@ -10,21 +11,21 @@ abstract class Token private constructor(
     init {
         require(value.startsWith("${prefix}_")) { "Token must start with '${prefix}_'" }
         val encoded = value.drop(prefix.length + 1)
-        require(encoded.length == 6) { "Token must have 6 Base32 characters after prefix" }
+        require(encoded.length == length) { "Token must have $length Base32 characters after prefix" }
         this.value = "${prefix}_${Base32Crockford.canonicalise(encoded)}"
     }
 
-    constructor(prefix: String, seed: Long, value: String) :
-        this(prefix, FeistelCipher(key = seed, domainSize = DOMAIN_SIZE), value)
+    constructor(prefix: String, length: Int, seed: Long, value: String) :
+        this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), value)
 
-    constructor(prefix: String, seed: Long, id: Int) :
-        this(prefix, FeistelCipher(key = seed, domainSize = DOMAIN_SIZE), id)
+    constructor(prefix: String, length: Int, seed: Long, id: Long) :
+        this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), id)
 
-    private constructor(prefix: String, cipher: FeistelCipher, id: Int) :
-        this(prefix, cipher, "${prefix}_${Base32Crockford.encode(cipher.encrypt(id))}")
+    private constructor(prefix: String, length: Int, cipher: FeistelCipher, id: Long) :
+        this(prefix, length, cipher, "${prefix}_${Base32Crockford.encode(cipher.encrypt(id), length)}")
 
-    /** Decodes this token back to its original integer ID. */
-    fun toId(): Int {
+    /** Decodes this token back to its original ID. */
+    fun toId(): Long {
         return cipher.decrypt(Base32Crockford.decode(value.substringAfter('_')))
     }
 
@@ -37,6 +38,11 @@ abstract class Token private constructor(
     override fun compareTo(other: Token) = this.value.compareTo(other.value)
 
     companion object {
-        private const val DOMAIN_SIZE = 32 * 32 * 32 * 32 * 32 * 32
+        private fun domainSize(length: Int): Long {
+            require(length in 1..12) { "Length must be between 1 and 12, got $length" }
+            var size = 1L
+            repeat(length) { size *= 32 }
+            return size
+        }
     }
 }
