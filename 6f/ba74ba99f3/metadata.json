@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "6fba74ba99f3",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "src/main/kotlin/Base32Crockford.kt",
+    "src/main/kotlin/FeistelCipher.kt",
+    "src/main/kotlin/Token.kt",
+    "src/test/kotlin/Base32CrockfordTest.kt",
+    "src/test/kotlin/FeistelCipherTest.kt",
+    "src/test/kotlin/TokenTest.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6f/ba74ba99f3/0/metadata.json",
+      "transcript": "/6f/ba74ba99f3/0/full.jsonl",
+      "content_hash": "/6f/ba74ba99f3/0/content_hash.txt",
+      "prompt": "/6f/ba74ba99f3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 48,
+    "cache_creation_tokens": 57539,
+    "cache_read_tokens": 1326480,
+    "output_tokens": 16933,
+    "api_call_count": 36
+  }
+}

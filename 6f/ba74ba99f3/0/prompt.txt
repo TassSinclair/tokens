@@ -1,0 +1,17 @@
+Help me review the currently staged changes. My aim was to ensure the token encoding process allowed for arbitrary-length tokens, set by the token instance.
+
+---
+
+1) I've fixed this. 2) upgrade domainSize to long. 3) not intentional, feel free to adjust to something more sensible. 4) Yes, please fix all tests. You'll see I removed the TenantToken, tests will need to use InvoiceToken instead. 5) Excellent catch, please add this. As you go, please review the tests to ensure all cases are captured properly, and there is minimal duplication between tested scenarios.
+
+---
+
+Great. One more review. Be critical and identify opportunities for idiomacy and readability improvements.
+
+---
+
+Target 3, 4, 5, 6 (add the require cap and a test).
+
+---
+
+Any other leftovers from our bump from int to long?
