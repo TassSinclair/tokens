@@ -1,3 +1,5 @@
+import java.math.BigInteger
+
 /** Pairs a type [prefix] with an encoded ID, so tokens are self-describing and can't be mixed across entity types. */
 abstract class Token private constructor(
     prefix: String,
@@ -10,23 +12,33 @@ abstract class Token private constructor(
 
     init {
         require(value.startsWith("${prefix}_")) { "Token must start with '${prefix}_'" }
-        val encoded = value.drop(prefix.length + 1)
-        require(encoded.length == length) { "Token must have $length Base32 characters after prefix" }
-        this.value = "${prefix}_${Base32Crockford.canonicalise(encoded)}"
+        val afterPrefix = value.drop(prefix.length + 1)
+        require(afterPrefix.length == length + 1) { "Token must have $length Base32 characters plus check symbol after prefix" }
+        val encoded = afterPrefix.dropLast(1)
+        val checkChar = afterPrefix.last()
+        val canonicalEncoded = Base32Crockford.canonicalise(encoded)
+        val numericValue = Base32Crockford.decode(canonicalEncoded)
+        val expectedCheck = Base32Crockford.checkSymbol(numericValue)
+        val normalizedCheck = Base32Crockford.canonicaliseCheckSymbol(checkChar)
+        require(normalizedCheck == expectedCheck) { "Invalid check symbol" }
+        this.value = "${prefix}_${canonicalEncoded}${expectedCheck}"
     }
 
     constructor(prefix: String, length: Int, seed: Long, value: String) :
         this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), value)
 
-    constructor(prefix: String, length: Int, seed: Long, id: Long) :
+    constructor(prefix: String, length: Int, seed: Long, id: BigInteger) :
         this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), id)
 
-    private constructor(prefix: String, length: Int, cipher: FeistelCipher, id: Long) :
-        this(prefix, length, cipher, "${prefix}_${Base32Crockford.encode(cipher.encrypt(id), length)}")
+    private constructor(prefix: String, length: Int, cipher: FeistelCipher, id: BigInteger) :
+        this(prefix, length, cipher, cipher.encrypt(id).let { encrypted ->
+            "${prefix}_${Base32Crockford.encode(encrypted, length)}${Base32Crockford.checkSymbol(encrypted)}"
+        })
 
     /** Decodes this token back to its original ID. */
-    fun toId(): Long {
-        return cipher.decrypt(Base32Crockford.decode(value.substringAfter('_')))
+    fun toId(): BigInteger {
+        val encoded = value.substringAfter('_').dropLast(1)
+        return cipher.decrypt(Base32Crockford.decode(encoded))
     }
 
     override fun toString(): String = value
@@ -38,11 +50,9 @@ abstract class Token private constructor(
     override fun compareTo(other: Token) = this.value.compareTo(other.value)
 
     companion object {
-        private fun domainSize(length: Int): Long {
-            require(length in 1..12) { "Length must be between 1 and 12, got $length" }
-            var size = 1L
-            repeat(length) { size *= 32 }
-            return size
+        private fun domainSize(length: Int): BigInteger {
+            require(length >= 1) { "Length must be at least 1, got $length" }
+            return BigInteger.valueOf(32).pow(length)
         }
     }
 }
