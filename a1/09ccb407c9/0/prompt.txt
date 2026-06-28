@@ -1,0 +1,17 @@
+Can you compare the implementation here with the description from https://sinclairstudios.net/share-tokens-instead-of-ids, what is missing in each?
+
+---
+
+Implement the missing check symbol and arbitrary length encoding, so the token subclass articulates the token length
+
+---
+
+Nice, we need tests for the new behaviour.
+
+---
+
+Review the code. Any valuable refactor or readability improvement opportunities?
+
+---
+
+Let's do 2., leave 1.
