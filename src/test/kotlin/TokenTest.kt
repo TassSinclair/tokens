@@ -8,7 +8,7 @@ class TokenTest {
 
     class UserToken : Token {
         constructor(value: String) : super(PREFIX, LENGTH, SEED, value)
-        constructor(id: BigInteger) : super(PREFIX, LENGTH, SEED, id)
+        constructor(id: Long) : super(PREFIX, LENGTH, SEED, id)
 
         companion object {
             const val PREFIX = "U"
@@ -19,7 +19,7 @@ class TokenTest {
 
     class InvoiceToken : Token {
         constructor(value: String) : super(PREFIX, LENGTH, SEED, value)
-        constructor(id: BigInteger) : super(PREFIX, LENGTH, SEED, id)
+        constructor(id: Long) : super(PREFIX, LENGTH, SEED, id)
 
         companion object {
             const val PREFIX = "INV"
@@ -30,7 +30,7 @@ class TokenTest {
 
     class HugeToken : Token {
         constructor(value: String) : super(PREFIX, LENGTH, SEED, value)
-        constructor(id: BigInteger) : super(PREFIX, LENGTH, SEED, id)
+        constructor(id: Long) : super(PREFIX, LENGTH, SEED, id)
 
         companion object {
             const val PREFIX = "H"
@@ -42,50 +42,50 @@ class TokenTest {
     @Test
     fun `UserToken roundtrips`() {
         for (id in 0L..20L) {
-            val token = UserToken(BigInteger.valueOf(id))
-            assertEquals(BigInteger.valueOf(id), token.toId())
+            val token = UserToken(id)
+            assertEquals(id, token.toId())
         }
     }
 
     @Test
     fun `InvoiceToken roundtrips`() {
         for (id in 0L..20L) {
-            val token = InvoiceToken(BigInteger.valueOf(id))
-            assertEquals(BigInteger.valueOf(id), token.toId())
+            val token = InvoiceToken(id)
+            assertEquals(id, token.toId())
         }
     }
 
     @Test
     fun `UserToken value matches expected format`() {
-        val token = UserToken(BigInteger.valueOf(42))
+        val token = UserToken(42L)
         assertTrue(token.value.matches(Regex("U_[0-9A-HJKMNP-TV-Z]{6}[0-9A-HJKMNP-TV-Z*~\$=U]")),
             "Token '${token.value}' does not match expected format")
     }
 
     @Test
     fun `InvoiceToken value matches expected format`() {
-        val token = InvoiceToken(BigInteger.valueOf(42))
+        val token = InvoiceToken(42L)
         assertTrue(token.value.matches(Regex("INV_[0-9A-HJKMNP-TV-Z]{8}[0-9A-HJKMNP-TV-Z*~\$=U]")),
             "Token '${token.value}' does not match expected format")
     }
 
     @Test
     fun `token constructed from string matches token constructed from ID`() {
-        val userFromId = UserToken(BigInteger.valueOf(42))
+        val userFromId = UserToken(42L)
         val userFromString = UserToken(userFromId.value)
         assertEquals(userFromId, userFromString)
-        assertEquals(BigInteger.valueOf(42), userFromString.toId())
+        assertEquals(42L, userFromString.toId())
 
-        val invoiceFromId = InvoiceToken(BigInteger.valueOf(42))
+        val invoiceFromId = InvoiceToken(42L)
         val invoiceFromString = InvoiceToken(invoiceFromId.value)
         assertEquals(invoiceFromId, invoiceFromString)
-        assertEquals(BigInteger.valueOf(42), invoiceFromString.toId())
+        assertEquals(42L, invoiceFromString.toId())
     }
 
     @Test
     fun `different token types with same ID produce different values`() {
-        val user = UserToken(BigInteger.valueOf(1))
-        val invoice = InvoiceToken(BigInteger.valueOf(1))
+        val user = UserToken(1L)
+        val invoice = InvoiceToken(1L)
         assertTrue(user.value != invoice.value)
     }
 
@@ -93,8 +93,8 @@ class TokenTest {
     fun `adjacent IDs produce tokens that differ in most characters`() {
         val pairs = listOf(0L to 1L, 99L to 100L, 999L to 1000L, 12345L to 12346L)
         for ((a, b) in pairs) {
-            val ea = UserToken(BigInteger.valueOf(a)).value.substringAfter('_').dropLast(1)
-            val eb = UserToken(BigInteger.valueOf(b)).value.substringAfter('_').dropLast(1)
+            val ea = UserToken(a).value.substringAfter('_').dropLast(1)
+            val eb = UserToken(b).value.substringAfter('_').dropLast(1)
             val diffs = ea.zip(eb).count { (c1, c2) -> c1 != c2 }
             assertTrue(diffs >= 3, "IDs $a and $b only differ in $diffs/6 chars: $ea vs $eb")
         }
@@ -102,19 +102,19 @@ class TokenTest {
 
     @Test
     fun `token canonicalises confusable characters`() {
-        val canonical = UserToken(BigInteger.valueOf(42))
+        val canonical = UserToken(42L)
         val encodedPart = canonical.value.substringAfter('_').dropLast(1)
         val checkPart = canonical.value.last()
         val confused = "U_${encodedPart.replace('0', 'O').replace('1', 'l').replace('V', 'u')}$checkPart"
         val fromConfused = UserToken(confused)
         assertEquals(canonical, fromConfused)
         assertEquals(canonical.value, fromConfused.value)
-        assertEquals(BigInteger.valueOf(42), fromConfused.toId())
+        assertEquals(42L, fromConfused.toId())
     }
 
     @Test
     fun `token canonicalises lowercase input`() {
-        val canonical = UserToken(BigInteger.valueOf(42))
+        val canonical = UserToken(42L)
         val encodedPart = canonical.value.substringAfter('_').dropLast(1)
         val checkPart = canonical.value.last()
         val lower = "U_${encodedPart.lowercase()}$checkPart"
@@ -124,23 +124,23 @@ class TokenTest {
 
     @Test
     fun `maximum ID roundtrips for short token`() {
-        val maxId = BigInteger.valueOf(32).pow(6) - BigInteger.ONE
-        val token = UserToken(BigInteger.valueOf(maxId.toLong()))
+        val maxId = BigInteger.valueOf(32).pow(6).toLong() - 1
+        val token = UserToken(maxId)
         assertTrue(token.value.matches(Regex("U_[0-9A-HJKMNP-TV-Z]{6}[0-9A-HJKMNP-TV-Z*~\$=U]")))
         assertEquals(maxId, token.toId())
     }
 
     @Test
     fun `maximum ID roundtrips for long token`() {
-        val maxId = BigInteger.valueOf(32).pow(8) - BigInteger.ONE
-        val token = InvoiceToken(BigInteger.valueOf(maxId.toLong()))
+        val maxId = BigInteger.valueOf(32).pow(8).toLong() - 1
+        val token = InvoiceToken(maxId)
         assertTrue(token.value.matches(Regex("INV_[0-9A-HJKMNP-TV-Z]{8}[0-9A-HJKMNP-TV-Z*~\$=U]")))
         assertEquals(maxId, token.toId())
     }
 
     @Test
     fun `token rejects wrong prefix`() {
-        val token = UserToken(BigInteger.valueOf(0))
+        val token = UserToken(0L)
         val badValue = "X" + token.value.drop(1)
         assertFailsWith<IllegalArgumentException> {
             UserToken(badValue)
@@ -156,7 +156,7 @@ class TokenTest {
 
     @Test
     fun `token rejects invalid check symbol`() {
-        val token = UserToken(BigInteger.valueOf(42))
+        val token = UserToken(42L)
         val encoded = token.value.dropLast(1)
         val badCheck = if (token.value.last() == '0') '1' else '0'
         assertFailsWith<IllegalArgumentException> {
@@ -166,7 +166,7 @@ class TokenTest {
 
     @Test
     fun `check symbol detects single-character errors`() {
-        val token = UserToken(BigInteger.valueOf(99))
+        val token = UserToken(99L)
         val chars = token.value.substringAfter('_')
         val encoded = chars.dropLast(1)
         val check = chars.last()
@@ -182,7 +182,7 @@ class TokenTest {
 
     @Test
     fun `check symbol detects transposition errors`() {
-        val token = UserToken(BigInteger.valueOf(777))
+        val token = UserToken(777L)
         val chars = token.value.substringAfter('_')
         val encoded = chars.dropLast(1)
         val check = chars.last()
@@ -200,12 +200,12 @@ class TokenTest {
         val extendedSymbols = setOf('*', '~', '$', '=', 'U')
         val found = mutableSetOf<Char>()
         for (id in 0L..1000L) {
-            val token = UserToken(BigInteger.valueOf(id))
+            val token = UserToken(id)
             val check = token.value.last()
             if (check in extendedSymbols) {
                 found.add(check)
                 val fromString = UserToken(token.value)
-                assertEquals(BigInteger.valueOf(id), fromString.toId())
+                assertEquals(id, fromString.toId())
             }
             if (found == extendedSymbols) break
         }
@@ -214,7 +214,7 @@ class TokenTest {
 
     @Test
     fun `check symbol is canonicalised from lowercase`() {
-        val token = UserToken(BigInteger.valueOf(42))
+        val token = UserToken(42L)
         val encoded = token.value.substringAfter('_').dropLast(1)
         val check = token.value.last()
         if (check.isLetter()) {
@@ -226,7 +226,7 @@ class TokenTest {
 
     class Length13Token : Token {
         constructor(value: String) : super(PREFIX, LENGTH, SEED, value)
-        constructor(id: BigInteger) : super(PREFIX, LENGTH, SEED, id)
+        constructor(id: Long) : super(PREFIX, LENGTH, SEED, id)
 
         companion object {
             const val PREFIX = "T"
@@ -238,14 +238,14 @@ class TokenTest {
     @Test
     fun `arbitrary-length token roundtrips`() {
         for (id in 0L..20L) {
-            val token = HugeToken(BigInteger.valueOf(id))
-            assertEquals(BigInteger.valueOf(id), token.toId())
+            val token = HugeToken(id)
+            assertEquals(id, token.toId())
         }
     }
 
     @Test
     fun `arbitrary-length token handles large IDs`() {
-        val largeId = BigInteger.valueOf(32).pow(16)
+        val largeId = BigInteger.valueOf(32).pow(16).toLong()
         val token = HugeToken(largeId)
         assertEquals(largeId, token.toId())
         val fromString = HugeToken(token.value)
@@ -254,41 +254,38 @@ class TokenTest {
 
     @Test
     fun `arbitrary-length token max ID roundtrips`() {
-        val maxId = BigInteger.valueOf(32).pow(20) - BigInteger.ONE
-        val token = HugeToken(maxId)
-        assertEquals(maxId, token.toId())
+        val token = HugeToken(Long.MAX_VALUE)
+        assertEquals(Long.MAX_VALUE, token.toId())
     }
 
     @Test
-    fun `length 13 exceeds old Long limit and roundtrips`() {
+    fun `length 13 supports full long range`() {
         for (id in 0L..20L) {
-            val token = Length13Token(BigInteger.valueOf(id))
-            assertEquals(BigInteger.valueOf(id), token.toId())
+            val token = Length13Token(id)
+            assertEquals(id, token.toId())
         }
-        val maxId = BigInteger.valueOf(32).pow(13) - BigInteger.ONE
-        assertTrue(maxId > BigInteger.valueOf(Long.MAX_VALUE), "32^13 - 1 should exceed Long.MAX_VALUE")
-        val token = Length13Token(maxId)
-        assertEquals(maxId, token.toId())
+        val token = Length13Token(Long.MAX_VALUE)
+        assertEquals(Long.MAX_VALUE, token.toId())
     }
 
     @Test
     fun `length 13 token matches expected format`() {
-        val token = Length13Token(BigInteger.valueOf(42))
+        val token = Length13Token(42L)
         assertTrue(token.value.matches(Regex("T_[0-9A-HJKMNP-TV-Z]{13}[0-9A-HJKMNP-TV-Z*~\$=U]")),
             "Token '${token.value}' does not match expected format")
     }
 
     @Test
-    fun `arbitrary-length token IDs beyond Long range are unique`() {
-        val base = BigInteger.valueOf(Long.MAX_VALUE)
-        val tokens = (0L..100L).map { Length13Token(base + BigInteger.valueOf(it)) }
+    fun `long range IDs are unique`() {
+        val base = Long.MAX_VALUE - 100
+        val tokens = (0L..100L).map { Length13Token(base + it) }
         val values = tokens.map { it.value }.toSet()
         assertEquals(101, values.size, "Expected 101 unique token values")
     }
 
     @Test
-    fun `arbitrary-length token constructed from string roundtrips`() {
-        val id = BigInteger.valueOf(Long.MAX_VALUE) + BigInteger.ONE
+    fun `token constructed from string roundtrips at long boundary`() {
+        val id = Long.MAX_VALUE
         val token = Length13Token(id)
         val fromString = Length13Token(token.value)
         assertEquals(token, fromString)
@@ -297,8 +294,7 @@ class TokenTest {
 
     @Test
     fun `arbitrary-length token check symbol detects corruption`() {
-        val id = BigInteger.valueOf(Long.MAX_VALUE) + BigInteger.valueOf(42)
-        val token = HugeToken(id)
+        val token = HugeToken(Long.MAX_VALUE - 42)
         val encoded = token.value.dropLast(1)
         val badCheck = if (token.value.last() == '0') '1' else '0'
         assertFailsWith<IllegalArgumentException> {

@@ -27,18 +27,19 @@ abstract class Token private constructor(
     constructor(prefix: String, length: Int, seed: Long, value: String) :
         this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), value)
 
-    constructor(prefix: String, length: Int, seed: Long, id: BigInteger) :
+    constructor(prefix: String, length: Int, seed: Long, id: Long) :
         this(prefix, length, FeistelCipher(key = seed, domainSize = domainSize(length)), id)
 
-    private constructor(prefix: String, length: Int, cipher: FeistelCipher, id: BigInteger) :
+    private constructor(prefix: String, length: Int, cipher: FeistelCipher, id: Long) :
         this(prefix, length, cipher, cipher.encrypt(id).let { encrypted ->
-            "${prefix}_${Base32Crockford.encode(encrypted, length)}${Base32Crockford.checkSymbol(encrypted)}"
+            val bigEncrypted = BigInteger.valueOf(encrypted)
+            "${prefix}_${Base32Crockford.encode(bigEncrypted, length)}${Base32Crockford.checkSymbol(bigEncrypted)}"
         })
 
     /** Decodes this token back to its original ID. */
-    fun toId(): BigInteger {
+    fun toId(): Long {
         val encoded = value.substringAfter('_').dropLast(1)
-        return cipher.decrypt(Base32Crockford.decode(encoded))
+        return cipher.decrypt(Base32Crockford.decode(encoded).toLong())
     }
 
     override fun toString(): String = value
@@ -50,9 +51,12 @@ abstract class Token private constructor(
     override fun compareTo(other: Token) = this.value.compareTo(other.value)
 
     companion object {
+        private val LONG_DOMAIN = BigInteger.ONE.shiftLeft(63)
+
         private fun domainSize(length: Int): BigInteger {
             require(length >= 1) { "Length must be at least 1, got $length" }
-            return BigInteger.valueOf(32).pow(length)
+            val fullDomain = BigInteger.valueOf(32).pow(length)
+            return fullDomain.min(LONG_DOMAIN)
         }
     }
 }

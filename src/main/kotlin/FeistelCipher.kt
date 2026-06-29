@@ -36,9 +36,10 @@ class FeistelCipher(
     }
 
     /** Maps [input] to a unique, unrelated integer within the same domain. */
-    fun encrypt(input: BigInteger): BigInteger {
-        require(input >= BigInteger.ZERO && input < domainSize) { "Input $input outside domain [0, $domainSize)" }
-        var value = input
+    fun encrypt(input: Long): Long {
+        val bigInput = BigInteger.valueOf(input)
+        require(input >= 0 && bigInput < domainSize) { "Input $input outside domain [0, $domainSize)" }
+        var value = bigInput
         do {
             var left = value / halfModulus
             var right = value % halfModulus
@@ -50,13 +51,14 @@ class FeistelCipher(
             }
             value = left * halfModulus + right
         } while (value >= domainSize)
-        return value
+        return value.toLong()
     }
 
     /** Recovers the original integer from an encrypted [input]. */
-    fun decrypt(input: BigInteger): BigInteger {
-        require(input >= BigInteger.ZERO && input < domainSize) { "Input $input outside domain [0, $domainSize)" }
-        var value = input
+    fun decrypt(input: Long): Long {
+        val bigInput = BigInteger.valueOf(input)
+        require(input >= 0 && bigInput < domainSize) { "Input $input outside domain [0, $domainSize)" }
+        var value = bigInput
         do {
             var left = value / halfModulus
             var right = value % halfModulus
@@ -68,6 +70,6 @@ class FeistelCipher(
             }
             value = left * halfModulus + right
         } while (value >= domainSize)
-        return value
+        return value.toLong()
     }
 }

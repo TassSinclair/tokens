@@ -12,27 +12,25 @@ class FeistelCipherTest {
     @Test
     fun `encrypt and decrypt roundtrip`() {
         for (id in 0L..20L) {
-            val bigId = BigInteger.valueOf(id)
-            assertEquals(bigId, cipher.decrypt(cipher.encrypt(bigId)))
+            assertEquals(id, cipher.decrypt(cipher.encrypt(id)))
         }
     }
 
     @Test
     fun `first 100_000 encrypted values are unique`() {
-        val seen = mutableSetOf<BigInteger>()
+        val seen = mutableSetOf<Long>()
         for (id in 0L until 100_000L) {
-            val bigId = BigInteger.valueOf(id)
-            val encrypted = cipher.encrypt(bigId)
+            val encrypted = cipher.encrypt(id)
             assertTrue(seen.add(encrypted), "Collision at ID $id: $encrypted")
-            assertEquals(bigId, cipher.decrypt(encrypted), "Roundtrip failed for ID $id")
+            assertEquals(id, cipher.decrypt(encrypted), "Roundtrip failed for ID $id")
         }
     }
 
     @Test
     fun `maximum domain value roundtrips`() {
-        val maxId = domainSize - BigInteger.ONE
+        val maxId = domainSize.toLong() - 1
         val encrypted = cipher.encrypt(maxId)
-        assertTrue(encrypted >= BigInteger.ZERO && encrypted < domainSize, "Encrypted value $encrypted outside domain")
+        assertTrue(encrypted >= 0 && encrypted < domainSize.toLong(), "Encrypted value $encrypted outside domain")
         assertEquals(maxId, cipher.decrypt(encrypted))
     }
 
@@ -41,50 +39,47 @@ class FeistelCipherTest {
         val largeDomain = BigInteger.valueOf(32).pow(8)
         val largeCipher = FeistelCipher(key = 0x12345L, domainSize = largeDomain)
         for (id in 0L..20L) {
-            val bigId = BigInteger.valueOf(id)
-            assertEquals(bigId, largeCipher.decrypt(largeCipher.encrypt(bigId)))
+            assertEquals(id, largeCipher.decrypt(largeCipher.encrypt(id)))
         }
-        val maxId = largeDomain - BigInteger.ONE
+        val maxId = largeDomain.toLong() - 1
         assertEquals(maxId, largeCipher.decrypt(largeCipher.encrypt(maxId)))
     }
 
     @Test
-    fun `arbitrary large domain size works`() {
-        val hugeDomain = BigInteger.valueOf(32).pow(20)
-        val hugeCipher = FeistelCipher(key = 0xABCDEFL, domainSize = hugeDomain)
+    fun `capped long domain works`() {
+        val longDomain = BigInteger.ONE.shiftLeft(63)
+        val longCipher = FeistelCipher(key = 0xABCDEFL, domainSize = longDomain)
         for (id in 0L..20L) {
-            val bigId = BigInteger.valueOf(id)
-            assertEquals(bigId, hugeCipher.decrypt(hugeCipher.encrypt(bigId)))
+            assertEquals(id, longCipher.decrypt(longCipher.encrypt(id)))
         }
-        val maxId = hugeDomain - BigInteger.ONE
-        assertEquals(maxId, hugeCipher.decrypt(hugeCipher.encrypt(maxId)))
+        assertEquals(Long.MAX_VALUE, longCipher.decrypt(longCipher.encrypt(Long.MAX_VALUE)))
     }
 
     @Test
     fun `encrypt rejects negative input`() {
         assertFailsWith<IllegalArgumentException> {
-            cipher.encrypt(BigInteger.valueOf(-1))
+            cipher.encrypt(-1L)
         }
     }
 
     @Test
     fun `encrypt rejects input at domain size`() {
         assertFailsWith<IllegalArgumentException> {
-            cipher.encrypt(domainSize)
+            cipher.encrypt(domainSize.toLong())
         }
     }
 
     @Test
     fun `decrypt rejects negative input`() {
         assertFailsWith<IllegalArgumentException> {
-            cipher.decrypt(BigInteger.valueOf(-1))
+            cipher.decrypt(-1L)
         }
     }
 
     @Test
     fun `decrypt rejects input at domain size`() {
         assertFailsWith<IllegalArgumentException> {
-            cipher.decrypt(domainSize)
+            cipher.decrypt(domainSize.toLong())
         }
     }
 }
