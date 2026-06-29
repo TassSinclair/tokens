@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "07535dbb8b13",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/main/kotlin/FeistelCipher.kt",
+    "src/main/kotlin/Token.kt",
+    "src/test/kotlin/FeistelCipherTest.kt",
+    "src/test/kotlin/TokenTest.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/07/535dbb8b13/0/metadata.json",
+      "transcript": "/07/535dbb8b13/0/full.jsonl",
+      "content_hash": "/07/535dbb8b13/0/content_hash.txt",
+      "prompt": "/07/535dbb8b13/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 39149,
+    "cache_read_tokens": 649520,
+    "output_tokens": 16989,
+    "api_call_count": 20
+  }
+}

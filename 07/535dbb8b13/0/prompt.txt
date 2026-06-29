@@ -1,0 +1,21 @@
+The current token implementatation supports arbitrary length tokens, by using BigInteger backing. The actual ID backing will be `long` type, so we will restrict it here also. This means the max length will be the largest value that can be represnted. I think this means we will end up with some long values that cannot be represented, is that right? What kind of compromise would be required in order to fully support the long domain?
+
+---
+
+Just to help me visualise, what would be the max value that can be represented by a 12-length token, vs Long.MAX_VALUE, vs the max value that can be represented by a 13-length token?
+
+---
+
+Say that we changed our feistel cypher strategy as you described. How would that impact a token with length 4, for example?
+
+---
+
+Right, let's make that change. If the only impact is that we can now support 13-character tokens and will need a boundary constraint when decoding them, it sounds like a quick win.
+
+---
+
+Continue
+
+---
+
+The FeistelCipher still uses BigInteger in the interface methods, can we safely use long here also?
