@@ -1,0 +1,18 @@
+# Token type configuration
+# Each section defines a token type that can be referenced by name.
+#
+# Usage:
+#   tokens encode --type u --id 42
+#   tokens decode U_71VHDHS
+#
+# Place this file at ./tokens.toml or ~/.config/tokens.toml
+
+[u]
+prefix = "U"
+length = 6
+seed = 0x2783DAB
+
+[inv]
+prefix = "INV"
+length = 8
+seed = 0x3B4FF74

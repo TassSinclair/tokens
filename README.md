@@ -45,7 +45,52 @@ UserToken("U_abcol2").value  // "U_ABC012"
 UserToken("U_abcol2").toId() == UserToken("U_ABC012").toId()  // true
 ```
 
-## Defining new token types
+## CLI
+
+Generate and decode tokens from the command line.
+
+### Setup
+
+```
+./gradlew installDist
+cp tokens.example.toml tokens.toml   # edit seeds as needed
+```
+
+The binary is at `./build/install/tokens/bin/tokens`.
+
+### Config file
+
+The CLI looks for config at `./tokens.toml`, then `~/.config/tokens.toml`. Each section defines a token type:
+
+```toml
+[u]
+prefix = "U"
+length = 6
+seed = 0x2783DAB
+
+[inv]
+prefix = "INV"
+length = 8
+seed = 0x3B4FF74
+```
+
+### Usage
+
+```bash
+# Encode using a configured type
+tokens encode --type u --id 42        # U_KH5HCY8
+
+# Encode with explicit parameters (no config needed)
+tokens encode --prefix U --length 6 --seed 0x2783DAB --id 42
+
+# Decode (auto-detects type from prefix)
+tokens decode U_KH5HCY8              # 42
+
+# List configured types
+tokens list
+```
+
+## Defining new token types (library)
 
 ```kotlin
 class ProjectToken : Token {
