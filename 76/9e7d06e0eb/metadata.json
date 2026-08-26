@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.6.2",
+  "checkpoint_id": "769e7d06e0eb",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 10,
+  "files_touched": [
+    ".gitignore",
+    "README.md",
+    "build.gradle.kts",
+    "src/main/kotlin/DynamicToken.kt",
+    "src/main/kotlin/Main.kt",
+    "src/main/kotlin/TokenConfig.kt",
+    "tokens.example.toml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/76/9e7d06e0eb/0/metadata.json",
+      "transcript": "/76/9e7d06e0eb/0/full.jsonl",
+      "content_hash": "/76/9e7d06e0eb/0/content_hash.txt",
+      "prompt": "/76/9e7d06e0eb/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 118,
+    "cache_creation_tokens": 254212,
+    "cache_read_tokens": 5215198,
+    "output_tokens": 38445,
+    "api_call_count": 94
+  }
+}

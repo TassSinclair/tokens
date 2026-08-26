@@ -1,0 +1,41 @@
+Review this project. I'm considering that I'd like to have a CLI operated tool that can generate a token on demand given an ID and a length and a prefix. It may also be necessary to supply in an configuration file. that retains information about different token types so that, say, for example, if I say I want a q token or a g token, then it uses that file to work out what the length and cipher key would be... Let's discuss this first before we produce anything. I don't mind how we write this. It might make the most sense to just write a Java or Kotlin entry point for this project, or it might make sense to write a small Rust. or golang. utility.
+
+---
+
+Let's go with your take. Happy with a Kotlin tool with toml config.
+
+---
+
+Nice. I'll need to be able to run it from other places, as if the executable (or a shortcut) was located in a directory on the path. What are the conventional practices for doing this? How would it work with the config?
+
+---
+
+Let's do only the user-level config, skip others. Let's proceed with the ln approach in (1) before. Ensure it's built so we can test it soon.
+
+---
+
+I'm running the command, the help for `tokens encode` right not only warns about the missing id, but doesn't mention the other vars (for the other case).
+
+---
+
+Needs a recompile.
+
+---
+
+Opening a new shell and running `tokens encode` still returns `Missing required option --id`.
+
+---
+
+Good. Now update the `encode` so that the `id` flag is not required, and the first un-flagged param is assumed to be the id.
+
+---
+
+Remove the flag mode. Ensure both "encode" usages work - the version that accepts type, and the version that accepts prefix, length and seed.
+
+---
+
+The usage information was removed?
+
+---
+
+This is fine, but the large box with additional usage info seems over-the-top. Instead does the library support providing examples, so we could show clear alternatives?
